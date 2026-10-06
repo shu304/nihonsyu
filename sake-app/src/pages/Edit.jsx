@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
-export default function Edit() {
+export default function Edit({ goList }) {
   const [sakeList, setSakeList] = useState([]);
   const [loading, setLoading] = useState(false);
 
