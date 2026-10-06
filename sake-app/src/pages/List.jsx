@@ -3,44 +3,54 @@ import { supabase } from "../supabaseClient";
 
 export default function List() {
   const [sakeList, setSakeList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // データ取得関数
+  const fetchSakeList = async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from("sake_list").select("*");
+    if (error) {
+      console.error("データ取得エラー:", error.message);
+    } else {
+      setSakeList(data);
+    }
+    setLoading(false);
+  };
+
+  // 初回読み込み
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase
-        .from("sake_list")
-        .select("*")
-        .order("id", { ascending: true });
-
-      if (error) {
-        console.error(error);
-      } else {
-        setSakeList(data);
-      }
-    };
-
-    fetchData();
+    fetchSakeList();
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>日本酒一覧</h2>
+    <div className="container">
+      <header className="header">
+        <h1>金山サルーン 日本酒一覧</h1>
+      </header>
+      <button className="nav-btn" onClick={goEdit}>
+        ✏️ 編集ページへ
+      </button>
 
-      {sakeList.map((item) => (
-        <div
-          key={item.id}
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "8px",
-          }}
-        >
-          <h3>{item.name}</h3>
-          <p>度数: {item.abv}</p>
-          <p>味: {item.taste}</p>
-          <p>コメント: {item.comment}</p>
+      {loading ? (
+        <p style={{ textAlign: "center" }}>読み込み中...</p>
+      ) : (
+        <div className="cards">
+          {sakeList.map((item) => (
+            <div className="card" key={item.id}>
+              <h3>{item.name}</h3>
+              <p>日本酒度：{item.abv}</p>
+              <p>味：{item.taste}</p>
+              <p>コメント：{item.comment}</p>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
+
+      <button className="refresh-btn" onClick={fetchSakeList}>
+        🔄 更新
+      </button>
+
+      <footer className="footer">© Kanayama Saloon</footer>
     </div>
   );
 }
