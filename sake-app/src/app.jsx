@@ -1,6 +1,6 @@
 import { useState } from "react";
 import List from "./pages/List.jsx";
-import Edit from "./pages/Edit.jsx";
+import Edit from "./pages/edit.jsx";
 
 export default function App() {
   const [page, setPage] = useState("list");
