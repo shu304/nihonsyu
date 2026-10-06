@@ -1,4 +1,4 @@
-import List from "./pages/List";
+import List from "./pages/List.jsx";
 
 function App() {
   return <List />;
